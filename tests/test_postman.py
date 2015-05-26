@@ -79,3 +79,12 @@ class TestPostman:
         postman.use(lambda conn: conn.login('username', 'password'))
         with postman.connection() as smtp:
             assert smtp.login.mock_calls == [call('username', 'password')]
+
+    def test_mail_from(self, postman, smtp, envelope):
+        envelope.mail_from = 'sender@mail.com'
+        postman.send(envelope)
+        sendmail = call.sendmail('sender@mail.com',
+                                 ['him@mail.com'],
+                                 '--email--')
+ 
+        assert sendmail in smtp.mock_calls

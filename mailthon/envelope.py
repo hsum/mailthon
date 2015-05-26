@@ -33,7 +33,7 @@ class Envelope(object):
         Returns the sender of the envelope, obtained
         from the headers.
         """
-        return self.mail_from or self.headers.sender
+        return self.headers.sender
 
     @property
     def receivers(self):

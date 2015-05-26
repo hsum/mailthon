@@ -41,4 +41,4 @@ class TestEnvelope:
             enclosure=[],
             mail_from='sender@mail.com',
         )
-        assert env.sender == 'sender@mail.com'
+        assert env.mail_from == 'sender@mail.com'
