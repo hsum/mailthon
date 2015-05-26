@@ -19,9 +19,14 @@ class Headers(dict):
     RFC 2822 compliant subclass of a dictionary. The
     semantics of the dictionary is different from
     that of the standard library MIME object- only
-    the latest header is preserved instead of
+    the **latest header** is preserved instead of
     preserving all headers. This makes header lookup
     deterministic and sane.
+
+    All headers are internationalised by default.
+    This makes it easier to write header generating
+    functions as they can just return unicode strings
+    that will automatically get encoded.
 
     :param obj: A header-value mapping or iterable.
     :param encoding: Encoding to use for the values
