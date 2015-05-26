@@ -11,6 +11,7 @@
 """
 
 from email.utils import quote, formatdate, make_msgid, getaddresses
+from email.header import Header
 
 
 class Headers(dict):
@@ -21,7 +22,15 @@ class Headers(dict):
     the latest header is preserved instead of
     preserving all headers. This makes header lookup
     deterministic and sane.
+
+    :param obj: A header-value mapping or iterable.
+    :param encoding: Encoding to use for the values
+        of headers, defaults to utf8.
     """
+
+    def __init__(self, obj, encoding='utf8'):
+        dict.__init__(self, obj)
+        self.encoding = encoding
 
     @property
     def resent(self):
@@ -71,7 +80,7 @@ class Headers(dict):
             del mime[key]
             if key == 'Bcc' or key == 'Resent-Bcc':
                 continue
-            mime[key] = self[key]
+            mime[key] = Header(self[key], self.encoding).encode()
 
 
 def subject(text):

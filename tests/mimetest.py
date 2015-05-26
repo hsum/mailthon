@@ -1,7 +1,9 @@
 from re import search
 from base64 import b64decode
 from email import message_from_string
+from email.header import make_header, decode_header
 from email.message import Message
+from .compat import unicode
 
 
 class mimetest:
@@ -11,7 +13,11 @@ class mimetest:
         self.mime = mime
 
     def __getitem__(self, header):
-        return self.mime[header]
+        value = self.mime[header]
+        if value is None:
+            return None
+        h = make_header(decode_header(value))
+        return unicode(h)
 
     @property
     def transfer_encoding(self):

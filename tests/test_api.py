@@ -21,7 +21,6 @@ class TestEmail:
         )
         return mimetest(envelope.mime())
 
-
     def test_bcc_not_set(self, mime):
         assert not mime['Bcc']
 

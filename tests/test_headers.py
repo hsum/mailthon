@@ -1,6 +1,8 @@
+# coding=utf8
 import pytest
 from mailthon.headers import Headers
-from .mimetest import blank
+from .mimetest import blank, mimetest
+from .compat import unicode
 
 
 class TestNotResentHeaders:
@@ -34,8 +36,9 @@ class TestNotResentHeaders:
         assert not headers.resent
 
     def test_prepare(self, headers):
-        mime = blank()
-        headers.prepare(mime)
+        msg = blank()
+        headers.prepare(msg)
+        mime = mimetest(msg)
 
         assert not mime['Bcc']
         assert mime['Cc'] == 'cc1@mail.com, cc2@mail.com'
@@ -89,3 +92,15 @@ class TestResentHeaders(TestNotResentHeaders):
 
         assert not mime['Resent-Bcc']
         assert not mime['Bcc']
+
+
+def test_prepare_unicode():
+    value = unicode('名字 <sender@mail.com>')
+    headers = Headers([
+        ('Sender', value),
+    ])
+    mime = blank()
+    headers.prepare(mime)
+
+    mime = mimetest(mime)
+    assert mime['Sender'] == value
