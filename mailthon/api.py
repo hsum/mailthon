@@ -10,7 +10,7 @@
 """
 
 
-from mailthon.enclosure import HTML, Attachment
+from mailthon.enclosure import HTML, Attachment, BinaryAttachment
 from mailthon.envelope import Envelope
 from mailthon.postman import Postman
 from mailthon.middleware import TLS, Auth
@@ -19,7 +19,7 @@ import mailthon.headers as headers
 
 def email(sender=None, receivers=(), cc=(), bcc=(),
           subject=None, content=None, encoding='utf8',
-          attachments=()):
+          attachments=(), binaries=()):
     """
     Creates an Envelope object with a HTML *content*.
 
@@ -28,8 +28,10 @@ def email(sender=None, receivers=(), cc=(), bcc=(),
     :param attachments: List of filenames to
         attach to the email.
     """
-    html = [HTML(content, encoding)]
-    files = [Attachment(k) for k in attachments]
+    enclosure=[]
+    enclosure.append(HTML(content, encoding))
+    enclosure.extend(tuple(Attachment(k) for k in attachments))
+    enclosure.extend(tuple(BinaryAttachment(k, t, f) for k, t, f in binaries))
     return Envelope(
         headers=[
             headers.subject(subject),
@@ -40,7 +42,7 @@ def email(sender=None, receivers=(), cc=(), bcc=(),
             headers.date(),
             headers.message_id(),
         ],
-        enclosure=(html + files),
+        enclosure=enclosure,
     )
 
 

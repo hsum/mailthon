@@ -144,3 +144,20 @@ class Attachment(Binary):
         """
         with open(self.path, 'rb') as handle:
             return handle.read()
+
+class BinaryAttachment(Binary):
+    """
+    Binary subclass for easier binary attachments (not from files).
+
+    :param headers: Optional headers.
+    """
+
+    def __init__(self, content, mimetype, filename, encoding=None,
+                 encoder=encode_base64, headers=()):
+        self.content = content
+        self.mimetype = mimetype
+        self.encoding = encoding
+        self.encoder = encoder
+        heads = dict([content_disposition('attachment', filename)])
+        heads.update(headers)
+        self.headers = Headers(heads)
